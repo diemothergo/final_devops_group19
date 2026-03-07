@@ -16,9 +16,9 @@ The repository is systematically organized to separate application source code f
 
 ```text
 ├── phase1/
+│   ├── evidence/                 # Documentation and screenshots of Phase 1
 │   ├── scripts/
 │   │   └── setup.sh              # Bash script for automated server provisioning
-│   ├── .env.example              # Environment variable template
 │   └── README.md                 # Specific documentation for Phase 1
 ├── phase2/
 │   ├── evidence/                 # Documentation and screenshots of Phase 2 deployment
@@ -36,7 +36,8 @@ The repository is systematically organized to separate application source code f
 ├── routes/                       # API and UI route definitions
 ├── services/                     # Business logic and database abstraction layers
 ├── validators/                   # Data validation rules and middlewares
-├── views/                        # EJS templates for frontend rendering
+├── views/                        # EJS templates for frontend 
+├── .env.example                  # Environment variable template
 ├── .gitignore                    # Framework-specific Git exclusions
 ├── main.js                       # Application entry point
 ├── package.json                  # Project metadata and dependencies
