@@ -18,6 +18,7 @@ The repository is systematically organized to separate application source code f
 ├── phase1/
 │   ├── scripts/
 │   │   └── setup.sh              # Bash script for automated server provisioning
+│   ├── .env.example              # Environment variable template
 │   └── README.md                 # Specific documentation for Phase 1
 ├── phase2/
 │   ├── evidence/                 # Documentation and screenshots of Phase 2 deployment
