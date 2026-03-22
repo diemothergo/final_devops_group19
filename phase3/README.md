@@ -1,5 +1,4 @@
 # Phase 3 — Docker Compose Deployment (Web + MongoDB)
--
 ## Objectives
 - Containerize the web app and MongoDB with Docker Compose
 - Pull the web image from Docker Hub (no server-side build)
