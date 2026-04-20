@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  backend:
+    image: vghuy/midterm-api:latest 
+    ports:
+      - "3000:3000"
+    deploy:
+      replicas: 3 
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    networks:
+      - app_net
+
+  db:
+    image: mongo:6.0
+    volumes:
+      - db_data:/data/db
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager 
+    networks:
+      - app_net
+
+volumes:
+  db_data:
+
+networks:
+  app_net:
+    driver: overlay
