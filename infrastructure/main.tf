@@ -10,9 +10,10 @@ terraform {
 provider "aws" {
   region = "ap-southeast-1"
 }
+
 resource "aws_security_group" "swarm_sg" {
   name        = "swarm_security_group"
-  description = "Allow SSH, Web and Docker Swarm internal traffic"
+  description = "Allow SSH, Web, HTTPS and Docker Swarm traffic"
 
   ingress {
     from_port   = 22
@@ -29,6 +30,13 @@ resource "aws_security_group" "swarm_sg" {
   }
 
   ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     from_port   = 2377
     to_port     = 2377
     protocol    = "tcp"
@@ -39,6 +47,12 @@ resource "aws_security_group" "swarm_sg" {
     from_port   = 7946
     to_port     = 7946
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
+    from_port   = 7946
+    to_port     = 7946
+    protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -72,6 +86,8 @@ resource "aws_instance" "manager" {
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.swarm_sg.id]
   key_name               = "huy-swarm-key" 
+  
+  user_data              = file("setup_node.sh")
 
   tags = {
     Name = "Swarm-Manager"
@@ -84,6 +100,8 @@ resource "aws_instance" "worker" {
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.swarm_sg.id]
   key_name               = "huy-swarm-key" 
+  
+  user_data              = file("setup_node.sh")
 
   tags = {
     Name = "Swarm-Worker-${count.index + 1}"
