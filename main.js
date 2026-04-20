@@ -12,7 +12,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// view engine and static
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
@@ -23,14 +22,12 @@ app.use('/products', productRoutes);
 const PORT = process.env.PORT || 3000;
 
 async function start() {
-  // Đảm bảo thư mục uploads tồn tại
   const uploadsDir = path.join(__dirname, 'public', 'uploads');
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
     console.log(`Created uploads directory at ${uploadsDir}`);
   }
 
-  // Try to connect to MongoDB once with 3s timeout
   const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/products_db';
   let usingMongo = false;
   try {

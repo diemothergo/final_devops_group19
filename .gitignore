@@ -17,4 +17,15 @@ public/uploads/*
 
 # OS generated files
 .DS_Store
-Thumbs.db
+Thumbs.db"infrastructure/.terraform/" 
+".terraform/" 
+"*.tfstate*" 
+"*.pem" 
+".terraform/" 
+"*.tfstate*" 
+"*.pem" 
+# Terraform & Security
+infrastructure/.terraform/
+*.tfstate
+*.tfstate.*
+*.pem
