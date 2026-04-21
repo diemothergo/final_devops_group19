@@ -32,7 +32,7 @@ jobs:
           host: ${{ secrets.MANAGER_IP }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-stack.yml,nginx.conf" 
+          source: "docker-stack.yml,nginx.conf"
           target: "/home/ubuntu/"
 
       - name: Deploy to Swarm Cluster
