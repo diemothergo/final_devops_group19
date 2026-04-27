@@ -1,6 +1,6 @@
 // ESLint configuration migrated to the new flat config format for ESLint v9+
 /** @type {import('eslint').Linter.FlatConfig} */
-export default [
+module.exports = [
   {
     languageOptions: {
       ecmaVersion: 12,
