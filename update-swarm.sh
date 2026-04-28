@@ -9,7 +9,7 @@ echo "Pulling image $IMAGE_NAME:$TAG ..."
 docker pull $IMAGE_NAME:$TAG
 
 echo "Deploying stack $STACK_NAME ..."
-docker stack deploy -c docker-stack.yml $STACK_NAME --with-registry-auth --prune
+TAG=$TAG docker stack deploy -c docker-stack.yml $STACK_NAME --with-registry-auth --prune
 
 echo "Deployment completed!"
 docker service ls

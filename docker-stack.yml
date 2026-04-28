@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    image: vghuy/midterm-api:${TAG:-latest}   # ← Quan trọng cho CI/CD
+    image: vghuy/midterm-api:${TAG:-latest}
     environment:
       - MONGO_URI=mongodb://mongodb:27017/midterm_db
     deploy:
