@@ -7,6 +7,7 @@ on:
     branches: [ main ]
 
 env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
   IMAGE_NAME: vghuy/midterm-api       # ← Giữ nguyên theo workflow của bạn
   STACK_NAME: final_devops_group19
   SERVER_PATH: ~/midterm-project                  # ← THAY BẰNG ĐƯỜNG DẪN THẬT TRÊN SERVER (hỏi teammate)
@@ -16,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '20'
           cache: 'npm'
@@ -68,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Deploy to Docker Swarm
         uses: appleboy/ssh-action@master
