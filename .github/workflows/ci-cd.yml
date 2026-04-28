@@ -8,9 +8,9 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  IMAGE_NAME: vghuy/midterm-api       # ← Giữ nguyên theo workflow của bạn
+  IMAGE_NAME: vghuy/midterm-api
   STACK_NAME: final_devops_group19
-  SERVER_PATH: ~/midterm-project                  # ← THAY BẰNG ĐƯỜNG DẪN THẬT TRÊN SERVER (hỏi teammate)
+  SERVER_PATH: /home/ubuntu/final_devops_group19
 
 jobs:
   ci:
@@ -29,7 +29,7 @@ jobs:
         run: npm ci
 
       - name: Lint code
-        run: npx eslint . --max-warnings=0   # Fail nếu có lỗi lint nghiêm trọng
+        run: npx eslint . --max-warnings=0
 
       - name: Security Scan - npm audit
         run: npm audit --audit-level=high
@@ -59,13 +59,13 @@ jobs:
         with:
           image-ref: '${{ env.IMAGE_NAME }}:${{ github.sha }}'
           format: 'table'
-          exit-code: '1'                    # Fail pipeline nếu có Critical/High
+          exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
 
   cd:
     needs: ci
-    if: github.ref == 'refs/heads/main'     # Chỉ deploy khi push lên main
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
