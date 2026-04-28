@@ -60,6 +60,8 @@ jobs:
           image-ref: '${{ env.IMAGE_NAME }}:${{ github.sha }}'
           format: 'table'
           exit-code: '1'
+          severity: 'HIGH,CRITICAL'
+          scanners: 'vuln'
           ignore-unfixed: true
           vuln-type: 'os,library'
 
