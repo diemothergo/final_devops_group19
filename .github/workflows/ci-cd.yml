@@ -80,11 +80,17 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # 1. Đăng nhập Docker Hub trên server để Swarm có quyền pull image
+            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+            
+            # 2. Vào thư mục code và kéo code mới nhất
             cd ${{ env.SERVER_PATH }}
             git pull origin main --rebase
-            TAG=${{ github.sha }} docker stack deploy -c docker-stack.yml ${{ env.STACK_NAME }} \
-              --with-registry-auth \
-              --prune
+            
+            # 3. Xuất biến TAG và Deploy (Swarm sẽ kéo thành công image Version 2.0)
+            export TAG=${{ github.sha }}
+            docker stack deploy -c docker-stack.yml ${{ env.STACK_NAME }} --with-registry-auth --prune
+            
             echo "Deployment completed successfully!"
             docker service ls
             docker stack ps ${{ env.STACK_NAME }}
