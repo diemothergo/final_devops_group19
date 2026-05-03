@@ -2,9 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const os = require('os');
-const productRoutes = require('../routes/productRoutes'); // Thêm .. để thoát ra khỏi thư mục controllers
-const dataSource = require('./services/dataSource');
+// --- KHAI BÁO CÁC ROUTES (Đã thêm lại dòng bị thiếu) ---
 const uiRoutes = require('./routes/uiRoutes');
+const dataSource = require('./services/dataSource');
 const path = require('path');
 const fs = require('fs'); 
 
@@ -45,14 +45,14 @@ app.get('/metrics', async (req, res) => {
 });
 
 // --- QUAN TRỌNG: Middleware truyền biến hostname và source toàn cục ---
-// Đặt đoạn này TRƯỚC các app.use(routes) để fix lỗi 500
+// Phải đặt TRƯỚC các app.use('/', uiRoutes)
 app.use((req, res, next) => {
   res.locals.hostname = os.hostname();
   res.locals.source = dataSource.isMongo ? 'mongodb' : 'in-memory';
   next();
 });
 
-// Các Route sử dụng giao diện
+// --- CÁC ROUTE SỬ DỤNG GIAO DIỆN ---
 app.use('/', uiRoutes);
 app.use('/products', productRoutes);
 
@@ -65,7 +65,7 @@ async function start() {
     console.log(`Created uploads directory at ${uploadsDir}`);
   }
 
-  const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/products_db';
+  const mongoUri = process.env.MONGO_URI || 'mongodb://final_devops_group19_mongodb:27017/products_db';
   let usingMongo = false;
   try {
     await mongoose.connect(mongoUri, {
