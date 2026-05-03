@@ -11,7 +11,7 @@ services:
       - "27017:27017"
 
   web:
-    image: ${WEB_IMAGE:-midterm_web:latest}
+    image: ${WEB_IMAGE:-vghuy/midterm-api:latest}
     container_name: midterm_web
     restart: always
     environment:

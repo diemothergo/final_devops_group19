@@ -1,0 +1,11 @@
+groups:
+- name: swarm_alerts
+  rules:
+  - alert: BackendServiceDown
+    expr: up{job="backend-app"} == 0
+    for: 10s
+    labels:
+      severity: critical
+    annotations:
+      summary: "Cảnh báo: Dịch vụ backend không phản hồi!"
+      description: "Node {{ $labels.instance }} của dịch vụ backend đang gặp sự cố."
