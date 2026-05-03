@@ -35,6 +35,12 @@ services:
       - "3000:3000"
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-worldmap-panel
+    volumes:
+      - ./monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - grafana_storage:/var/lib/grafana
     networks:
       - app_net
     deploy:
@@ -91,6 +97,7 @@ services:
 volumes:
   db_data:
   nginx-config:   # Thêm volume này
+  grafana_storage:
 
 networks:
   app_net:
