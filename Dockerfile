@@ -1,4 +1,4 @@
-FROM node:24-bookworm-slim AS builder
+FROM node:20-bookworm-slim AS builder
 WORKDIR /usr/src/app
 
 COPY package*.json ./
@@ -7,7 +7,7 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY . .
 RUN mkdir -p public/uploads
 
-FROM node:24-bookworm-slim
+FROM node:20-bookworm-slim
 WORKDIR /usr/src/app
 
 ENV NODE_ENV=production

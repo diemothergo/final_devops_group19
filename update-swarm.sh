@@ -2,7 +2,7 @@
 set -e
 
 STACK_NAME=final_devops_group19
-IMAGE_NAME=${DOCKERHUB_USERNAME:-vghuy}/final_devops_group19
+IMAGE_NAME=${DOCKERHUB_USERNAME:-vghuy}/midterm-api
 TAG=${1:-latest}
 
 echo "Pulling image $IMAGE_NAME:$TAG ..."

@@ -1,94 +1,59 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const os = require('os');
-// --- KHAI BÁO CÁC ROUTES ---
-const uiRoutes = require('../routes/uiRoutes');
-const productRoutes = require('../routes/productRoutes');
-const dataSource = require('./services/dataSource');
-const path = require('path');
-const fs = require('fs'); 
+const dataSource = require('../services/dataSource');
 
-// --- BẮT ĐẦU: Cấu hình Prometheus Custom Metrics ---
-const client = require('prom-client');
-const collectDefaultMetrics = client.collectDefaultMetrics;
-collectDefaultMetrics({ register: client.register });
-
-const httpRequestDurationMicroseconds = new client.Histogram({
-  name: 'http_request_duration_seconds',
-  help: 'Duration of HTTP requests in seconds',
-  labelNames: ['method', 'route', 'code'],
-  buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10]
-});
-// --- KẾT THÚC: Cấu hình Prometheus ---
-
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Middleware ghi nhận Metrics
-app.use((req, res, next) => {
-  const end = httpRequestDurationMicroseconds.startTimer();
-  res.on('finish', () => {
-    end({ route: req.route ? req.route.path : req.path, code: res.statusCode, method: req.method });
-  });
-  next();
-});
-
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Endpoint xuất Metrics
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', client.register.contentType);
-  res.end(await client.register.metrics());
-});
-
-// --- QUAN TRỌNG: Middleware truyền biến hostname và source toàn cục ---
-// Phải đặt TRƯỚC các app.use('/', uiRoutes)
-app.use((req, res, next) => {
-  res.locals.hostname = os.hostname();
-  res.locals.source = dataSource.isMongo ? 'mongodb' : 'in-memory';
-  next();
-});
-
-// --- CÁC ROUTE SỬ DỤNG GIAO DIỆN ---
-app.use('/', uiRoutes);
-app.use('/products', productRoutes);
-
-const PORT = process.env.PORT || 3000;
-
-async function start() {
-  const uploadsDir = path.join(__dirname, 'public', 'uploads');
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-    console.log(`Created uploads directory at ${uploadsDir}`);
-  }
-
-  const mongoUri = process.env.MONGO_URI || 'mongodb://final_devops_group19_mongodb:27017/products_db';
-  let usingMongo = false;
+exports.list = async (req, res, next) => {
   try {
-    await mongoose.connect(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 3000
-    });
-    usingMongo = true;
-    console.log('Connected to MongoDB — using mongodb as data source.');
-  } catch {
-    usingMongo = false;
-    console.log('Failed to connect to MongoDB within 3s — falling back to in-memory database.');
-  }
+    const data = await dataSource.getAll();
+    res.json(data);
+  } catch (err) { next(err); }
+};
 
-  await dataSource.init(usingMongo);
+exports.getOne = async (req, res, next) => {
+  try {
+    const data = await dataSource.getById(req.params.id);
+    if (!data) return res.status(404).json({ message: 'Not found' });
+    res.json(data);
+  } catch (err) { next(err); }
+};
 
-  app.listen(PORT, () => {
-    console.log(`Server listening on port http://localhost:${PORT} — hostname: ${os.hostname()}`);
-    console.log(`Data source in use: ${dataSource.isMongo ? 'mongodb' : 'in-memory'}`);
-  });
-}
+exports.create = async (req, res, next) => {
+  try {
+    const payload = req.body;
+    if (req.file) {
+      payload.imageUrl = `/uploads/${req.file.filename}`;
+    }
+    const data = await dataSource.create(payload);
+    res.status(201).json(data);
+  } catch (err) { next(err); }
+};
 
-start();
+exports.put = async (req, res, next) => {
+  try {
+    const payload = req.body;
+    if (req.file) {
+      payload.imageUrl = `/uploads/${req.file.filename}`;
+    }
+    const data = await dataSource.replace(req.params.id, payload);
+    if (!data) return res.status(404).json({ message: 'Not found' });
+    res.json(data);
+  } catch (err) { next(err); }
+};
 
-module.exports = app;
+exports.patch = async (req, res, next) => {
+  try {
+    const payload = req.body;
+    if (req.file) {
+      payload.imageUrl = `/uploads/${req.file.filename}`;
+    }
+    const data = await dataSource.patch(req.params.id, payload);
+    if (!data) return res.status(404).json({ message: 'Not found' });
+    res.json(data);
+  } catch (err) { next(err); }
+};
+
+exports.remove = async (req, res, next) => {
+  try {
+    const data = await dataSource.remove(req.params.id);
+    if (!data) return res.status(404).json({ message: 'Not found' });
+    res.json(data);
+  } catch (err) { next(err); }
+};
