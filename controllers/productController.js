@@ -2,8 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const os = require('os');
-// --- KHAI BÁO CÁC ROUTES (Đã thêm lại dòng bị thiếu) ---
+// --- KHAI BÁO CÁC ROUTES ---
 const uiRoutes = require('./routes/uiRoutes');
+const productRoutes = require('../routes/productRoutes');
 const dataSource = require('./services/dataSource');
 const path = require('path');
 const fs = require('fs'); 
